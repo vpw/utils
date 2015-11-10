@@ -1,0 +1,355 @@
+shopt -s expand_aliases
+export pcudir=''
+alias c='clear'
+alias acroread=evince
+alias mxt='xterm -tb &'
+alias gt='gnome-terminal &'
+alias sd='echo "SRC "$SRC; echo " DEST "$DEST;'
+alias lsc='~/bin/screen-4.0.3/screen'
+nojunk () { grep -v OBJ | grep -v tags | grep -v cscope | grep -i log ;}
+alias fina='find . | xargs grep' 
+alias finc='find . -name "*.c" -o -name "*.cc" -o -name "*.C" | grep c$| xargs grep'
+alias finh='find . -name "*.h" -o -name "*.hh" -o -name "*.H" | grep h$ | xargs grep'
+alias fing='find . -name "*.h" -o -name "*.cc" -o -name "*.c" -o -name "*.pr" -o -name "*.fn" -o -name "*.ct" -o -name "*.pk" | xargs grep' 
+alias finm='find . -name "*make*" -o -name "*Make*" | xargs grep' 
+alias finf='find . | xargs grep -l' 
+alias finai='find . | xargs grep -i'
+alias finci='find . -name "*.c" -o -name "*.cc" -o -name "*.C" | grep c$| xargs grep -i'
+alias finhi='find . -name "*.h" -o -name "*.hh" -o -name "*.H" | grep h$ | xargs grep -i'
+alias fingi='find . -name "*.h" -o -name "*.cc" -o -name "*.c" -o -name "*.pr" -o -name "*.fn" -o -name "*.ct" -o -name "*.pk" | xargs grep -i' 
+alias finmi='find . -name "*make*" -o -name "*Make*" | xargs grep -i' 
+alias finfi='find . | xargs grep -l -i' 
+alias ctagsc='ctags -R --langmap=c:+.fn.ct -L '
+alias cscopec='cscope -b -q -R -u -i'
+alias mcm='make clean; make;'
+alias mca='make cleanall; make;'
+alias sba='source ~/.bashrc;'
+
+fingim() { fingi $1 | more; }
+fingm() { fing $1 | more; }
+fincim() { finci $1 | more; }
+fincm() { finc $1 | more; }
+finhim() { finhi $1 | more; }
+finhm() { finh $1 | more; }
+finaim() { finai $1 | more; }
+finam() { fina $1 | more; }
+finmim() { finmi $1 | more; }
+finmm() { finm $1 | more; }
+finfim() { finfi $1 | more; }
+finfm() { finf $1 | more; }
+
+# view aliases
+CODE_BASE=/product/access/s-gsm/
+LTE_CODE_BASE=/product/access/s-lte/
+GSPB_BASE=$CODE_BASE/src/CALL/BSC/GSPB/
+LTE_CALL_BASE=$LTE_CODE_BASE/src/CALL/
+LTE_ECS=$LTE_CALL_BASE/ECS
+LTE_ECMB=$LTE_ECS/ECMB
+LTE_ECMM=$LTE_ECMB/ECMM
+alias ct='cleartool'
+alias cdpp='cd /user/ipbssbuilder/yohan/kapsch/data/PCU/vob/passport-PCR6.1'
+alias cdbts='cd /user/ipbssbuilder/yohan/kapsch/dataBTS/'
+alias cdbsc='cd /user/ipbssbuilder/yohan/kapsch/data/BSC/'
+alias cdk='cd /user/ipbssbuilder/yohan/kapsch/'
+alias cdcq='cd /opt/ibm/RationalSDLC/clearcase/linuc_x86/bin/'
+alias mco='ct lsco -cvi -r '
+alias mcos='ct lsco -cvi -r -short'
+alias ulsco='ct lsco -cvi -r -user '
+alias counr='ct co -nc -unr '
+alias ci='ct ci -c '
+alias xcc='xclearcase &'
+alias xls='xlsvtree '
+alias ctmg='ct findmerge -g'
+alias ctd='ct diff '
+alias ctdp='ct diff -pre '
+alias ctdg='ct diff -g '
+alias ctdpg='ct diff -g -pre '
+# LTE
+alias cdl='cd $LTE_CODE_BASE'
+alias cdlecs='cd $LTE_ECS'
+alias cdlecmb='cd $LTE_ECMB'
+alias cdlecmm='cd $LTE_ECMM'
+
+# TBC
+alias cvbin="cd /mvl/CGE6.0_V2/tools/mips-gnu/bin"
+alias cvgcc="/mvl/CGE6.0_V2/tools/mips-gnu/bin/mips-montavista-linux-gnu-gcc"
+alias cvgcct="/mvl/CGE6.0_V2/tools/mips-gnu/bin/mips-montavista-linux-gnu-gcc -march=octeon2 -mabi=64 -msoft-float -O2 -Wall -Wextra -fno-strict-aliasing -Werror     -O0 -g -pipe -Wall -W -DTHREAD_SAVE -D_REENTRANT -D_THREAD_SAFE  -D__RMT_COMM__ -pthread -Werror -rdynamic -I/WindPrj3_up2/cn58xx-64bit_std-std_prj/export/sysroot/cav_octeon_cn58xx-glibc_std/sysroot/usr/include/libxml2 " 
+alias cvgcch="/mvl/CGE6.0_V2/tools/mips-gnu/bin/mips-montavista-linux-gnu-gcc -march=i686 -mabi=32 -msoft-float -O2 -Wall -Wextra -fno-strict-aliasing -Werror     -O0 -g -pipe -Wall -W -DTHREAD_SAVE -D_REENTRANT -D_THREAD_SAFE  -D__RMT_COMM__ -pthread -Werror -rdynamic " 
+alias cvg++="/mvl/CGE6.0_V2/tools/mips-gnu/bin/mips-montavista-linux-gnu-g++"
+alias cvman="man M /usr/local/Cavium_Networks/OCTEON-SDK-2.3.0/tools/man -S 1:7 "
+alias OCT="cd /mvl/CGE6.0_prj/octeon2-64/"
+alias IMG="cd /mvl/CGE6.0_prj/octeon2-64/tmp/deploy/images/"
+alias ENV="cd /mvl/CGE6.0_prj/octeon2-64/bin/"
+alias LIBD="cd /mvl/CGE6.0_img/octeon2-64"
+alias KERN="cd /mvl/CGE6.0_prj/octeon2-64/tmp/work/cavium-octeon2-64-mv-linux/linux-2.6.32-1203192203/linux-2.6.32"
+alias SDK="cd /usr/local/Cavium_Networks/OCTEON-SDK-2.3.0"
+
+alias astyle='/user/w.vardhan/astyle/astyle/build/gcc/bin/astyle'
+alias ENG='export LANG=en_US.ISO8859-1; export LC_MESSAGES=$LANG; export LC_ALL=$LANG'
+#alias EN='export LANG=en_us_8859_1; export LC_MESSAGES=$LANG; export LC_ALL=$LANG'
+alias KOR='export LANG=ko_KR.UTF-8; export LC_MESSAGES=$LANG; export LC_ALL=$LANG'
+alias lsd='find . -maxdepth 1 -type d| cut -d/ -f2'
+
+alias soa='source ~/.alias;'
+alias gv7='vim -g'
+alias v7=vim
+alias va='gvim ~/.alias;'
+alias vb='gvim ~/.bashrc;'
+alias rr='reset'
+if [[ `hostname` =~ 'sasken' || `hostname` =~ 'gsmsim1' ]]	
+then
+	alias gvim=/usr/bin/gvim
+fi
+
+}
+fchg() {
+    a=("$@")
+#    ((last_idx=${#a[@]}- 1))
+    ((last_idx=${#a[@]}))
+#    b=${a[last_idx]}
+#    unset a[last_idx]
+
+    for i in "${a[@]}" ; do
+        echo "$i"
+			echo "Skip? Y|y to skip."
+			read resp
+			#echo $resp
+			if [ "$resp" != "Y" ] && [ "$resp" != "y" ]
+			then 	
+				cleartool diff -pre -g $i;
+			else	echo "Skipped"
+			fi
+	read;
+	done;
+#    echo "b: $b"
+}
+
+mchg() {
+    a=("$@")
+#    ((last_idx=${#a[@]}- 1))
+    ((last_idx=${#a[@]}))
+#    b=${a[last_idx]}
+#    unset a[last_idx]
+
+	for i in "${a[@]}" ; do
+		echo "$i"
+		echo "Skip? Y|y to skip."
+		read resp
+		#echo $resp
+		if [ "$resp" != "Y" ] && [ "$resp" != "y" ]
+		then 	
+			fname=`echo $i | cut -f1 -d'@'`
+			echo $fname
+			if [[ ! `ct ls -s $fname` =~ CHECKEDOUT ]]
+			then
+				echo "Not checked out. Checkout? (y|Y)"
+				read resp
+				if [ "$resp" == "Y" ] || [ "$resp" == "y" ]
+				then
+					counr $fname
+				fi
+			fi
+			echo "Komparing $fname"
+			kompare $i $fname
+			echo "Edit the file with vim? (y|Y)"
+			read resp
+			if [ "$resp" == "Y" ] || [ "$resp" == "y" ]
+			then 	
+				gvim $fname
+			fi
+		else	echo "Skipped"
+		fi
+		read;
+	done;
+#    echo "b: $b"
+}
+cqrel() {
+	cqperl /user/ipbssbuilder/bin/comp_cccq.pl $1 /main $2
+}
+
+cqchg() { 
+	#if (${#args[*]} != 1) then echo "Incorrect args!";
+	if (($# != 1)); then echo "Incorrect args! Usage: cqchg <CQID>"; return; 
+	else 
+#	grep "/product" ~/CQs/CQ-$1.txt | cut -f8 -d' ';
+#	local files=(`grep "/product" ~/CQs/CQ-$1.txt | cut -f8 -d' '`)
+#	for i in $files; do echo $i; done;
+	
+#	grep "/product" ~/CQs/CQ-$1.txt | cut -f8 -d' '
+	cqrel $1 1-2-3 | grep "/product" | cut -f8 -d' '
+	echo "Continue? [Enter(Y)/Ctrl-C(N)]"
+	read
+#	fchg `grep "/product" ~/CQs/CQ-$1.txt | cut -f8 -d' '`; 
+	fchg `cqrel $1 1-2-3 | grep "/product" | cut -f8 -d' '`;
+#	for i in `grep "/product" ~/CQs/CQ-$1.txt | cut -f8 -d' '`; 
+#		do 	echo $i; 
+#			echo "Skip? Y|y to skip."
+#			read resp
+#			#echo $resp
+#			if [ "$resp" != "Y" ] && [ "$resp" != "y" ]
+#			then 	
+#				cleartool diff -pre -g $i;
+#			else	echo "Skipped"
+#			fi
+#		done
+	fi
+}
+cqmrg() {
+# merge from another CQ - maybe from another branch
+	if (($# != 1)); then echo "Incorrect args! Usage: cqmrg <CQID>"; return; 
+	else 
+		cqrel $1 1-2-3 | grep "/product" | cut -f8 -d' '
+		echo "Continue? [Enter(Y)/Ctrl-C(N)]"
+		read
+		mchg `cqrel $1 1-2-3 | grep "/product" | cut -f8 -d' '`;
+	fi
+}	
+prchg() {
+	for i in `cleartool lspr . | grep keep`;
+	do echo $i; export FNAME=`echo $i | sed s/\.keep$//`; echo $FNAME; cleartool diff -g $FNAME $i;
+	done
+}
+alias xct='xclearcase -vtree '
+alias vimvi='vim `mcos`'
+alias vichg='fchg `mcos`'
+alias mrgchk='for i in `mcos`; do xct $i; done'
+chkin() {
+for i in `mcos`; do 
+	echo "Checking file: $i";
+	xclearcase -vtree $i; 
+	echo "Edit the file with vim? (y|Y)"
+	read resp
+	if [ "$resp" == "Y" ] || [ "$resp" == "y" ]
+	then 	
+		gvim $i
+	fi
+done;
+}
+vobchg() {
+	v=`vname`;
+	if [ "**" ==  "$v" ] 
+	then 
+		echo "View not set!"
+		exit 1
+	fi
+	fchg `ct lshistory -r . | grep create | cut -b43- | cut -f1 -d\" | head -50`
+#	do echo $i;
+#			echo "Skip? Y|y to skip."
+#			read resp
+#			#echo $resp
+#			if [ "$resp" != "Y" ] && [ "$resp" != "y" ]
+#			then 	
+#				cleartool diff -pre -g $i;
+#			else	echo "Skipped"
+#			fi
+#	read;
+#	done;
+}
+
+#gc() { FILE=`which $1`;
+#	if [ -f $FILE ] 
+#	then 
+#		echo $FILE
+#	else 
+#		echo "File doesn't exist!\" 
+#	fi 
+#	}
+alias cdp='cd $GSPB_BASE'
+alias cdpo='cd $GSPB_BASE/../GSPB_org'
+makedir() {  cd $cdir; make clean; make; cdp; }
+#function mdd() { 
+#	if [ $BASH_ARGC -gt 0 ] then ll=$*; else ll=$cdir; fi;
+#for i in $ll; do cd $i; make clean; make; cd ..; done;
+#}
+mpcu() { for dir in allocator atmMgr cell codecs/agprs codecs/bssgp codecs/csn1 codecs dispatchers fsm hostMgr interfaceMgr lapd_mngr ms pcu socketMgr trauMgr vptask vpworks ; do cdir=$dir; makedir; done; make clean; make;}
+md() { for i in $*; do makedir $i; done;}
+
+# unreserve reserved files in curr view
+function munr() { mco | grep -v unreserved | cut -f7 -d' ' | cut -f2 -d'"' | xargs ct unreserve; }
+# check reserved files in curr view
+function mres() { mco | grep -v unreserved | cut -f7 -d' ' | cut -f2 -d'"'; }
+
+function vvdiff() { for i in `mcos`; do echo $i; cleartool diff -pre $i | more; read tmp; done;}
+#function gvdiff() { for i in `cleartool lsco -cvi -r -short`; do cleartool diff -g -pre $i; done; }
+
+# SVT 10.254.242.244 lsm lsmr /log/system/applog
+export DIFFTOOL=kompare
+difftool() {
+#if [ $BASH_ARGC -gt 0 ]; then export DIFFTOOL=$1;
+export DIFFTOOL=$1
+echo $DIFFTOOL
+}
+
+fm() {
+	$DIFFTOOL $SRC/$1 $DEST/$1
+}
+
+		if [ -f "$1" ]
+		then
+			for i in `cat $1`; do app $i; done
+		else
+			echo "File $1 does not exist!"
+		fi
+	else
+		for i in `mcos`; do app $i; done; 
+	fi
+}
+
+function clrobj() {
+	dir=$1
+	for i in `ls $dir/src/*.c`
+	do
+		fn=`basename $i| sed s/c$/o/`
+		rm OBJ/*/$fn
+	done
+}
+
+	if [[ -z "$1" || -z "$2" ]]
+	then 
+		echo "Usage: ccmatch <flag to search> <filename>"
+	fi
+	fn=`cleartool ls $2 | cut -f1 -d' '`
+	cv=`basename $fn`
+	lv=$cv
+	fnc=`dirname $fn`
+	while :
+	do
+#		echo "Search "$1" in "$fnc/$cv
+		grep -i -q $1 $fnc/$cv
+		if [ $? = 0 ]
+		then
+			# found
+#			echo "Found"
+			echo $fnc/$cv [$lv]
+			break
+		else
+			if [ $cv != 0 ]
+			then
+				cv=$(( $cv - 1 ))
+			else
+			#	echo $fnc" not matching"
+				break
+			fi
+		fi
+	done
+}
+alias ccm=ccmatch
+
+		db="CqNWSYSUser"
+		cq_check=$(echo "select cqadmin.cc_vob_object.name from cqadmin.$entity, cqadmin.cc_change_set, cqadmin.parent_child_links, cqadmin.cc_vob_object where cqadmin.$entity.cc_change_set=cqadmin.cc_change_set.dbid and cqadmin.cc_change_set.dbid<>0 and cqadmin.cc_change_set.dbid=cqadmin.parent_child_links.parent_dbid and cqadmin.parent_child_links.child_dbid=cqadmin.cc_vob_object.dbid and cqadmin.$entity.id='$MR';" | /opt/rational/clearquest/bin/pdsql -v ss -s 165.213.149.64 -u cq_pdsql -p cq_pdsql -db $db)
+		for f in $cq_check; 
+		do 
+			if [[ $f =~ "product" ]]
+				then echo $f
+			fi
+		done;
+}
+
+function cqr() {
+	if [ -n "$2" ]
+	then
+	cqcs $1 | xargs vim
+	else
+	cqcs $1 | xargs gvim
+	fi
+}
