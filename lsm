@@ -1,0 +1,401 @@
+#!/usr/bin/expect -f
+
+#
+# Login to board automation script
+# Author: Karthikeyan M
+# Date: 18-Feb-13
+#
+# How to?
+#   lsm <n/w server> <Board> <asm/lsm ip - optional>
+#   Eg: lsm sun ip_0_0_0 10.254.241.253
+#       lsm         -> This will take you to Default ASM board (253)
+#       lsm sun     -> This will login to LCMA card
+#       lsm sun cli -> This will take you to LCMA card and login to CLI
+#       lsm sun pld -> This will take you to LCMA card and launch pld.opw
+#
+
+ set Nw     [lindex $argv 0]
+ set Board  [lindex $argv 1]
+ set lsmIp  [lindex $argv 2]
+
+ if { [string compare $Nw "help"] == 0 } {
+   puts "----lsm help-----"
+   puts "lsm <n/w server> <Board> <asm/lsm ip - optional>"
+   puts "Eg: lsm sun ip_0_0_0 10.254.241.253"
+   puts "    lsm         -> This will take you to Default ASM board (253)"
+   puts "    lsm na na 10.254.241.212 -> This will take you to ASM 212"
+   puts "    lsm sun     -> This will login to LCMA card"
+   puts "    lsm sun cli -> This will take you to LCMA card and login to CLI"
+   puts "    lsm sun pld -> This will take you to LCMA card and launch pld.opw"
+   puts "    lsm sgsn    -> This will take you to default SGSN"
+   puts "    lsm sgsn cli-> This will take you to default SGSN's CLI"
+   exit
+ }
+
+ set lsmUsr "lsm"
+ set lsmPwd "lsmr123"
+
+ set nwUsr "extuser"
+ set brdUsr "intuser"
+
+ if { [string length $lsmIp] == 0 } {
+   if { [string compare $Nw "thur"] == 0 } {
+     set lsmIp "10.254.240.186"
+   } else {
+# Default IP
+     #set lsmIp "10.254.239.137"
+     #set lsmIp "10.254.241.253"
+     set lsmIp "10.254.241.254"
+     #set lsmIp "10.254.241.181"
+#     set lsmIp "107.11.113.203"
+#     set lsmIp "localhost"
+   }
+
+ if { [string compare $Nw "bsc70"] == 0 } {
+     set lsmIp "10.254.241.181"
+   }
+ if { [string compare $Nw "mbs140"] == 0 } {
+     set lsmIp "10.254.239.137"
+   }
+
+ if { [string compare $Nw "hol"] == 0 } {
+#     set lsmIp "10.254.241.254"
+#      set lsmIp "165.213.67.74"
+   }
+ if { [string compare $Nw "aug"] == 0 } {
+#     set lsmIp "10.254.241.254"
+#      set lsmIp "165.213.67.74"
+   }
+  if { [string compare $Nw "gta_bsc"] == 0 } {
+#     set lsmIp "10.254.240.186"
+     set Nw "10.20.98.100"
+   }
+  if { [string compare $Nw "gta_bts"] == 0 } {
+     set Nw "10.1.1.197"
+   }
+
+  if { [string compare $Nw "sgsn"] == 0 } {
+# SGSN IP
+     set lsmIp "165.213.106.189"
+     set lsmUsr "root"
+     set lsmPwd "system"
+   }
+
+  if { [string compare $Nw "msc"] == 0 } {
+# MSC IP
+     set lsmIp "165.213.106.235"
+     set lsmUsr "root"
+     set lsmPwd "system"
+   }
+
+########################### GTA SETUP IP ###############################
+  if { [string compare $Nw "sgsnsim"] == 0 } {
+# SGSN SIM IP
+     set lsmIp "10.1.1.173"
+     set lsmUsr "root"
+     set lsmPwd "gsm1234"
+   }
+
+  if { [string compare $Nw "ggsnsim"] == 0 } {
+# GGSN SIM IP
+     set lsmIp "10.1.1.174"
+     set lsmUsr "root"
+     set lsmPwd "gsm1234"
+   }
+
+  if { [string compare $Nw "mssim"] == 0 } {
+# MS SIM IP
+     set lsmIp "10.1.1.179"
+     set lsmUsr "root"
+     set lsmPwd "gsm1234"
+   }
+
+  if { [string compare $Nw "gtaf"] == 0 } {
+# GTAF SIM IP
+     set lsmIp "10.1.1.176"
+     set lsmUsr "root"
+     set lsmPwd "gsm1234"
+   }
+ }
+ set timeout 2
+
+##########################################################
+# Logging to ASM / LSM
+##########################################################
+ spawn telnet $lsmIp -l $lsmUsr
+  while {1} {
+    expect {
+        "word: "                          {send -- "$lsmPwd\r"}
+        "lsm]"                             {break}
+        "SGSN"                            {break}
+        "MSC"                             {break}
+        timeout                           {interact; exit}
+    }
+ }
+ send "PROMPT_COMMAND='echo -ne \"\\033]0;$lsmIp\\007\"';\r"
+
+ if { [string compare $Nw "sgsn"] == 0 } {
+##########################################################
+# Logging to SGSN
+##########################################################
+         send "PROMPT_COMMAND='echo -ne \"\\033]0;$lsmIp SGSN\\007\"';\r"
+         send "cdbin\r"
+                if { [string compare $Board "cli"] == 0 } {
+                        send "CLI\r"
+                        send "ROOT\r"
+                        send "ROOT\r"
+                }
+
+         interact
+         exit
+ }
+
+ if { [string compare $Nw "msc"] == 0 } {
+##########################################################
+# Logging to MSC
+##########################################################
+         send "PROMPT_COMMAND='echo -ne \"\\033]0;$lsmIp MSC\\007\"';\r"
+         send "cd /apps/ngns/sw/bin\r"
+                if { [string compare $Board "cli"] == 0 } {
+                        send "CLI\r"
+                        expect "USERNAME"
+                        send "ROOT\r"
+                        send "ROOT\r"
+                }
+
+         interact
+         exit
+ }
+ if { [string compare $Nw ""] == 0 } {
+         interact
+         exit
+ }
+
+ if { [string compare $Nw "na"] == 0 } {
+         interact
+         exit
+ }
+
+##########################################################
+# Logging to LCMA / WIMA
+##########################################################
+ set isBts 0
+ send "ssh $nwUsr@$Nw\r"
+ while {1} {
+    expect {
+        "LCMA"                            {break}
+        "WIMA"                            {set isBts 1; break}
+        "MMA1"                            {set isBts 2; break}
+        "The authenticity of host"        {send "yes\r"}
+#       "word: "                          {send "s2cU\$ers\r"}
+        "word: "                          {send "s2cextU\$erslm\r"}
+        "Host key verification failed."   {send "rm -f /home/lsm/.ssh/known_hosts\r"; send "ssh $nwUsr@$Nw\r";}
+        timeout                           {interact; exit}
+    }
+ }
+
+ send "en\r"
+ after 20
+ while {1} {
+    expect {
+        "#"                               {send "switch root\r"; after 20; break}
+        "$"                               {send "su -\r"; break}
+        "command not found"               {send "su -\r"; break}
+        timeout                           {interact; exit}
+    }
+ }
+
+ set timeout 6
+ set tryOneMoreRoot 0
+ while {1} {
+    expect {
+        "The authenticity of host"        {send "yes\r"}
+        "word:"                           {send "S@msung1pckul\r";}
+        "failure"                         {set tryOneMoreRoot 1; break}
+        "incorrect"                       {set tryOneMoreRoot 1; break}
+#       "root"                            {puts "Break at root\n"; break}
+        "#"                               {break}
+#       ":~#"                             {break}
+        timeout                           {puts "Timeout.\n"; interact; exit}
+    }
+ }
+
+if {$tryOneMoreRoot == 1} {
+ puts "tryOneMoreRoot"
+ send "switch root\r"
+ set timeout 2
+ while {1} {
+    expect {
+         "word:"                          {send "S@msung1p\r"}
+         "incorrect"                      {interact; exit}
+         ":~#"                            {break}
+         timeout                          {interact; exit}
+    }
+ }
+}
+ send "PROMPT_COMMAND='echo -ne \"\\033]0;[string toupper $Nw]\\007\"';\r"
+ expect "#"
+
+ if { [string compare $Board ""] == 0 } {
+         interact
+         exit
+ }
+
+ if { [string compare $Board "na"] == 0 } {
+         interact
+         exit
+ }
+
+##########################################################
+# Launching cli
+##########################################################
+ if { [string compare $Board "cli"] == 0 } {
+#        expect "#"
+         send "PROMPT_COMMAND='echo -ne \"\\033]0;[string toupper $Nw] Cli\\007\"';\r"
+         expect "#"
+         send "cli\r"
+         expect "USERNAME"
+         send "ROOT\r"
+         expect "PASSWORD"
+         send "ROOT\r"
+         interact
+         exit
+ }
+
+##########################################################
+# Launching pld.opw
+##########################################################
+ if { [string compare $Board "pld"] == 0 } {
+         expect "#"
+         send "PROMPT_COMMAND='echo -ne \"\\033]0;[string toupper $Nw] Pld\\007\"';\r"
+         expect "#"
+         send "cd /pkg/4.0.0/BSC/COMM/4.0.0/r-01/bin/\r"
+         expect "#"
+         send "./pld.opw\r"
+         interact
+         exit
+ }
+
+##########################################################
+# Logging to WRDA / WRGA
+##########################################################
+# send "ssh -o 'StrictHostKeyChecking no' $brdUsr@$Board\r"
+ if { $isBts == 1 } {
+         send "vrctl 31 bash\r"
+         expect "#"
+ }
+#MMA cards
+ if { $isBts == 2 } {
+         send "chvrf 31 bash\r"
+         expect "#"
+ }
+
+ if { [string compare $Board "ude"] == 0 } {
+##########################################################
+#            UDE port configuration for GTA
+##########################################################
+         set timeout 10
+#        expect "#"
+         send "mvdxdd  7\r"
+         expect "=>"
+         send "49\r"
+         expect "="
+         send "17\r"
+         expect "="
+         send "99\r"
+
+         expect "=>"
+         send "50\r"
+         expect "="
+         send "99\r"
+         expect "="
+         send "17\r"
+         expect "="
+         send "1\r"
+
+         expect "=>"
+         send "0\r"
+
+         expect "#"
+         send "swE6095 8\r"
+
+         expect "=>"
+         send "32\r"
+         expect "="
+         send "99\r"
+         expect "="
+         send "ff\r"
+         expect "="
+         send "0\r"
+
+         expect "=>"
+         send "0\r"
+         interact
+         exit
+ }
+
+ send "ssh $brdUsr@$Board\r"
+ while {1} {
+     expect {
+         "WRDA"                           {break}
+         "WRGA"                           {break}
+         "GSCA"                           {break}
+         "GCA"                            {break}
+         "The authenticity of host"       {send "yes\r"}
+#        "word"                           {send "s2cSy\$tem\r"}
+         "word"                           {send "s2cintU\$ersck\r"}
+         "Host key verification failed."  {send "rm -f /root/.ssh/known_hosts\r"; send "ssh $brdUsr@$Board\r";}
+         timeout                          {interact; exit}
+     }
+ }
+
+ set tryOneMoreRoot 0
+ send "su -\r"
+ set timeout 6
+ while {1} {
+    expect {
+         "WRDA"                           {break}
+         "WRGA"                           {break}
+         "GSCA"                           {break}
+         "GCA"                            {break}
+         "The authenticity of host"       {send "yes\r"}
+         "word:"                          {send "S@msung1pckul\r"}
+         "failure"                        {set tryOneMoreRoot 1; break}
+         "incorrect"                      {set tryOneMoreRoot 1; break}
+         timeout                          {interact; exit}
+    }
+ }
+
+if {$tryOneMoreRoot == 1} {
+ puts "tryOneMoreRoot"
+ send "su -\r"
+ set timeout 2
+ while {1} {
+    expect {
+         "root"                           {break}
+         "word:"                          {send "S@msung1p\r"}
+         timeout                          {interact; exit}
+    }
+ }
+}
+
+ if { $isBts == 0 } {
+        expect "#"
+        send "PROMPT_COMMAND='echo -ne \"\\033]0;[string toupper $Nw] $Board\\007\"';\r"
+
+        expect "#"
+        send "cd /pkg/4.0.0/BSC/GSM/4.0.0/r-01/bin/\r"
+        expect "#"
+        send "alias psg=\"ps -ef | grep gsgb\"; alias psp=\"ps -ef | grep gspb\";\r"
+        expect "#"
+        send "alias cdh=\"cd /home/$brdUsr\"; alias cdb=\"cd /pkg/4.0.0/BSC/GSM/4.0.0/r-01/bin/\";\r"
+ }
+
+ if { $isBts == 1 || $isBts == 2 } {
+#       expect ">"
+        send "alias cdh=\"cd /home/$brdUsr\"; alias cdb=\"cd /pkg/2.0.2/MBS/GSM/2.0.2/r-01/bin/\";\r"
+        send "PROMPT_COMMAND='echo -ne \"\\033]0;[string toupper $Nw] $Board\\007\"';\r"
+        send "alias psd=\"ps -ef | grep dsp\"; alias pst=\"ps -ef | grep gst\";\r"
+ }
+
+ interact
