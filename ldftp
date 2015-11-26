@@ -1,0 +1,173 @@
+#!/usr/bin/expect -f
+
+#
+# Script to automate storing file to target
+# Author: Karthikeyan M
+# Date: 19-Feb-13
+# How to?
+#   ldftp file <target server> <board ip> <asm/lsm ip>
+#   Eg: ldftp gspb_ac.opw sun ip_0_2_0 10.254.241.253
+# Note: asm/lsm ip argument is optional.
+#
+
+ set file   [lindex $argv 0]
+ set Nw     [lindex $argv 1]
+ set Board  [lindex $argv 2]
+ set lsmIp  [lindex $argv 3]
+
+
+ if { [string compare $file "help"] == 0 } {
+   puts "---------ldftp help---------"
+   puts "   ldftp file <target server> <board ip> <asm/lsm ip>"
+   puts "   Eg: ldftp gspb_ac.opw sun ip_0_2_0 10.254.241.253"
+   puts "   Note: asm/lsm ip argument is optional"
+   exit
+ }
+
+ if { [string compare $file ""] == 0 } {
+   puts "ldftp help - Displays help for this script"
+   exit
+ }
+
+ if { [string length $lsmIp] == 0 } {
+   if { [string compare $Nw "thu"] == 0 } {
+     set lsmIp "10.254.240.186"
+   } else {
+     set lsmIp "10.254.241.254"
+   }
+   if { [string compare $Nw "bsc70"] == 0 } {
+     set lsmIp "10.254.241.244"
+   } 
+  if { [string compare $Nw "gta_bsc"] == 0 } {
+#     set lsmIp "10.254.240.186"
+     set Nw "10.20.98.100"
+   }
+  if { [string compare $Nw "gta_bts"] == 0 } {
+     set Nw "10.1.1.197"
+   }
+ if { [string compare $Nw "hol"] == 0 } {
+#     set lsmIp "10.254.241.254"
+      set lsmIp "165.213.67.74"
+   }
+ if { [string compare $Nw "aug"] == 0 } {
+#     set lsmIp "10.254.241.254"
+      set lsmIp "165.213.67.74"
+   }
+ }
+ set timeout 60
+ spawn sftp lsm@$lsmIp
+ while {1} {
+	 expect {
+		 "sftp>"                      {break}
+		 "The authenticity of host"   {send "yes\r"}
+		 "word: "                     {send "lsmr123\r"}
+		 timeout                      {exit 1}
+	 }
+ }
+ send -- "cd /tmp\r"
+ expect "sftp>"
+ send -- "mput $file\r"
+ expect "sftp>"
+ send -- "bye\r"
+ expect "Goodbye."
+ if { [string compare $Nw ""] == 0 } {
+   exit
+ }
+ spawn telnet $lsmIp -l lsm
+ expect "Password: "
+ send -- "lsmr123\r"
+ expect "/home/lsm] "
+ send -- "sftp extuser@$Nw\r"
+ while {1} {
+	 expect {
+		 "sftp>"                      {break}
+		 "The authenticity of host"   {send "yes\r"}
+		 "word: "                     {send "s2cextU\$erslm\r"}
+		 timeout                      {exit 1} 
+	 }
+ }
+ send -- "lcd /tmp\r"
+ expect "sftp>"
+ send -- "mput $file\r"
+ expect "sftp>"
+ send -- "bye\r"
+ while {1} {
+         expect {
+                 "LSM"                        {break}
+                 "ASM"                        {break}
+		 timeout                      {exit 1}
+         }
+ }
+ if { [string compare $Board ""] == 0 } {
+   exit
+ }
+ set isBts 0
+ send "ssh extuser@$Nw\r"
+ while {1} {
+	 expect {
+		 "LCMA"                       {break}
+		 "WIMA"                       {set isBts 1;break}
+		 "The authenticity of host"   {send "yes\r"}
+		 "word: "                     {send "s2cextU\$erslm\r"}
+		 timeout                      {exit 1}
+	 }
+ }
+ send "en\r"
+  while {1} {
+         expect {
+		"#"       	              	  {send "switch root\r"; after 20; break}
+		"$"       	              	  {send "su -\r"; break}
+		"command not found"               {send "su -\r"; break}
+		 timeout                      {exit 1}
+         }
+ }
+ set tryOneMoreRoot 0
+  while {1} {
+         expect {
+#		 "LCMA"                       {break}
+#                 "WIMA"                       {break}
+                 "The authenticity of host"   {send "yes\r"}
+         	 "word:"                      {send "S@msung1pckul\r"}
+	         "incorrect"                  {set tryOneMoreRoot 1; break}
+		 "#"                          {break}
+		 timeout                      {exit 1}
+         }
+ }
+
+ if {$tryOneMoreRoot == 1} {
+ puts "tryOneMoreRoot"
+ send "switch root\r"
+ while {1} {
+    expect {
+         "word:"                          {send "S@msung1p\r"}
+	 "incorrect"                      {interact; exit}
+	 ":~#"                            {break}
+	 timeout                          {interact; exit}
+    }
+ }
+ }
+ if { $isBts == 1 } {
+	 send "vrctl 31 bash\r"
+	 expect "#"
+ }
+ send "sftp intuser@$Board\r"
+ while {1} {
+     expect {
+         "sftp>"                      {break}
+         "The authenticity of host"   {send "yes\r"}
+	 "word"       	      	      {send "s2cintU\$ersck\r"}
+	 timeout                      {exit 1}
+     }
+ }
+ send -- "lcd /home/extuser\r"
+ expect "sftp>"
+ if { $isBts == 1 } {
+# 	 send -- "cd /tmp/\r"
+#	 expect "sftp>"
+ }
+ send -- "mput $file\r"
+ expect "sftp>"
+ send -- "!rm $file\r"
+ expect "sftp>"
+ send -- "bye\r"
+ close $spawn_id
